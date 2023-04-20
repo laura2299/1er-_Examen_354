@@ -1,7 +1,6 @@
 
-
 import pandas as pd
-
+import matplotlib.pyplot as plt
 
 #Media de columna 1
 #De la columna años contamos la cantidad por años y luego le sacamos la media de esas cantiddes:
@@ -78,17 +77,22 @@ percentiles_por_columna = dataframe.quantile([0.1, 0.25, 0.5, 0.75, 0.9])
 print(percentiles_por_columna)
 
 
+plt.plot(dataframe['work_year'], dataframe['experience_level'], 'ro')
+plt.xlabel('Etiqueta del eje X')
+plt.ylabel('Etiqueta del eje Y')
+plt.title('Título del gráfico')
+plt.show()
+#En el primer grafico podemos ver que en cada año tenemos una cantidad x de cada nivel de experiencia del empleado.
 
+plt.plot(dataframe['employee_residence'], dataframe['company_location'], 'ro')
+plt.xlabel('Etiqueta del eje X')
+plt.ylabel('Etiqueta del eje Y')
+plt.title('Título del gráfico')
+plt.show()
 
-
-
-
-
-
-
-
-
-
+#Para las columnas residencia de empleado y ubicacion de la compañia se puede ver 
+#que tenemos una linea que va hacia arriba 
+#lo que significa que la mayoria de los valores se corresponden segun la lista de datos.
 
 
 
