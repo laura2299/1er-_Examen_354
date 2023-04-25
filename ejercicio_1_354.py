@@ -2,65 +2,124 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-#Media de columna 1
-#De la columna años contamos la cantidad por años y luego le sacamos la media de esas cantiddes:
-def media_columna1(columna):
-    cont1 = columna.count(2023)
-    cont2 = columna.count(2022)
-    cont3 = columna.count(2021)
-    cont4 = columna.count(2020)
-    suma = cont1+cont2+cont3+cont4
-    media= suma/4
-    return media
-    
-def media_2(columna):
-     cont1 = columna.count('SE')
-     cont2 = columna.count('MI')
-     suma = cont1+cont2
-     media= suma/2
-     return media
+print("-----------------Media moda, percentil sin LIBRERIAS---------------------)
 
-    
-def media_salario(columna):
-    suma = 0
-    for num in columna:
-        suma += num
-
-    # Calcular la media dividiendo la suma entre el número de elementos
-    media = suma / len(columna)
-    return media
-# Abrir el archivo CSV con pandas
 from google.colab import drive
 drive.mount('/content/drive')
 import os
 os.chdir("/content/drive/MyDrive/datos")
 dataframe = pd.read_csv("ds_salaries.csv")
+print(dataframe)
+print("---------PERCENTIL 90----------")
+# 1: Ordenar los datos por la columna 'salary'
+
+datos_ordenados = sorted(dataframe['salary'])
+print(datos_ordenados)
+#  2: Calcular el rango intercuartil 
+Q1 = datos_ordenados[int(len(datos_ordenados)*0.25)]
+Q3 = datos_ordenados[int(len(datos_ordenados)*0.75)]
+IQR = Q3 - Q1
+
+# 3: Calcular el porcentaje de datos que se encuentran por debajo del percentil 90
+p = (len(datos_ordenados)-1)*0.9 + 1
+
+# 4: Interpolar el valor del percentil 90 en los datos ordenados
+if p % 1 == 0:
+    # Si el porcentaje es un número entero, el percentil corresponde a un valor en los datos ordenados
+    P = datos_ordenados[int(p)-1]
+else:
+    # Si el porcentaje no es un número entero, se interpola el valor
+    i = int(p) - 1
+    d = p % 1
+    P = datos_ordenados[i] + d * (datos_ordenados[i+1] - datos_ordenados[i])
 
 
-# Obtener los datos de la primera columna en una lista
-columna1 = dataframe.iloc[:, 0].tolist()
-# Imprimir la lista
-print("Contenido de la primera columna en 'micolumna':")
-print(columna1)
-#aplicar la media a esta columna
-media1= media_columna1(columna1)
-print("la media de la col:",media1)
-#media de columna2 El nivel de experiencia en el trabajo durante el año
+print("El percentil 90 de la columna 'salary' es:", P) 
+print("................MEDIA..................")
+import numpy as np
+# Definimos la columna que queremos calcular la media
+datos = dataframe['salary']
+print(datos)
+
+# Calculamos la suma de los valores en la columna
+suma = np.int64(0)
+for elemento in datos:
+    suma =suma + elemento
+# Calculamos el número total de valores en la columna
+num_valores = len(datos)
+
+# Calculamos la media de los valores en la columna
+media = suma / num_valores
+print("La media de la columna es:", media)
+print("---------------------------Media de una variable categorica------------------")
+from sklearn.preprocessing import LabelEncoder
+columna_me = dataframe['experience_level']
+print(columna_me)
+le = LabelEncoder()
+# Ajustar y transformar la variable categórica
+columna_codificada = le.fit_transform(columna_me)
+# Mostrar los resultados
+print("Variable codificada: ")
+print( columna_codificada)
+suma = np.int64(0)
+for elemento in columna_codificada:
+    suma =suma + elemento
+num_valores = len(columna_codificada)
+
+media2 = suma / num_valores
+print("La media de la columna categorica es:", media2)
+#Moda de la columna salary
+print("----------------MODA-------------------------")
+columna = dataframe['salary'].tolist()
+frecuencias = {}
+for valor in columna:
+    if valor not in frecuencias:
+        frecuencias[valor] = 1
+    else:
+        frecuencias[valor] += 1
 
 
-columna2 = dataframe.iloc[:, 1].tolist()
+moda = None
+frecuencia_maxima = 0
+for valor, frecuencia in frecuencias.items():
+    if frecuencia > frecuencia_maxima:
+        moda = valor
+        frecuencia_maxima = frecuencia
 
-media2=media_2(columna2)
-print("La media de columna 2 es:",media2)
-#Media Columna 3
+print('La moda de la columna es:', moda)
 
-#media de columna 5 salario
-columna5 = dataframe.iloc[:, 4].tolist()
-print("la columna de salarios:")
-print(columna5)
-media5= media_salario(columna5)
-print("La media de salarios es :",media5)
 
+print(".......moda de una variable categorica................")
+
+columna = dataframe['experience_level']
+print(columna)
+le = LabelEncoder()
+# Ajustar y transformar la variable categórica
+columna_codificado = le.fit_transform(columna)
+# Mostrar los resultados
+print("Variable codificada: ")
+print( columna_codificado)
+
+frecuencias = {}
+for valor in columna_codificado:
+    if valor not in frecuencias:
+        frecuencias[valor] = 1
+    else:
+        frecuencias[valor] += 1
+
+
+moda = None
+frecuencia_maxima = 0
+for valor, frecuencia in frecuencias.items():
+    if frecuencia > frecuencia_maxima:
+        moda = valor
+        frecuencia_maxima = frecuencia
+
+print('La moda de la columna es:', moda)
+
+      
+      
+print("-------------------------MEDIA,MODA,PERCENTIL CON LIBRERIAS----------------------------------)     
 print("------------Media con libreria pandas--------------------------")
 media_por_columna = dataframe.mean()
 print(media_por_columna)
